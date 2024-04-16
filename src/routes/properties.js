@@ -4,9 +4,10 @@ import getPropertyById from "../services/properties/getPropertyById.js";
 import createProperty from "../services/properties/createProperty.js";
 import updatePropertyById from "../services/properties/updatePropertyById.js";
 import deleteProperty from "../services/properties/deleteProperty.js";
-const router = express.Router();
 
-router.get("/", (req, res) => {
+export const propertiesRouter = express.Router();
+
+propertiesRouter.get("/", (req, res) => {
   try {
     const { aboutMe } = req.query;
     const properties = getProperties(aboutMe);
@@ -17,7 +18,7 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
+propertiesRouter.get("/:id", (req, res) => {
   try {
     const { id } = req.params;
     const property = getPropertyById(id);
@@ -33,7 +34,7 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
+propertiesRouter.put("/:id", (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -66,7 +67,7 @@ router.put("/:id", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+propertiesRouter.post("/", (req, res) => {
   const {
     title,
     description,
@@ -92,7 +93,7 @@ router.post("/", (req, res) => {
   res.status(201).json(newProperty);
 });
 
-router.delete("/:id", (req, res) => {
+propertiesRouter.delete("/:id", (req, res) => {
   try {
     const { id } = req.params;
     const deletedPropertyId = deleteProperty(id);
@@ -109,5 +110,3 @@ router.delete("/:id", (req, res) => {
     res.status(500).send(`Deleting property ${id} failed`);
   }
 });
-
-export default router;

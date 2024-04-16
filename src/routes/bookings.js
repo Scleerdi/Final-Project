@@ -6,9 +6,9 @@ import deleteBooking from "../services/bookings/deleteBooking.js";
 import updateBookingById from "../services/bookings/updateBookingById.js";
 import authMiddleware from "../middleware/advancedAuth.js";
 
-export const router = express.Router();
+export const bookingsRouter = express.Router();
 
-router.get("/", (req, res) => {
+bookingsRouter.get("/", (req, res) => {
   try {
     const { totalPrice, bookingStatus } = req.query;
     const bookings = getBookings(totalPrice, bookingStatus);
@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
+bookingsRouter.get("/:id", (req, res) => {
   try {
     const { id } = req.params;
     const booking = getBookingById(id);
@@ -35,7 +35,7 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.put("/:id", authMiddleware, (req, res) => {
+bookingsRouter.put("/:id", authMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -64,7 +64,7 @@ router.put("/:id", authMiddleware, (req, res) => {
   }
 });
 
-router.post("/", authMiddleware, (req, res) => {
+bookingsRouter.post("/", authMiddleware, (req, res) => {
   const {
     userId,
     propertyId,
@@ -86,7 +86,7 @@ router.post("/", authMiddleware, (req, res) => {
   res.status(201).json(newBooking);
 });
 
-router.delete("/:id", authMiddleware, (req, res) => {
+bookingsRouter.delete("/:id", authMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const deletedBookingId = deleteBooking(id);

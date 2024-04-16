@@ -1,12 +1,12 @@
 import express from "express";
-import createAmenity from "../services/amenities/getAmenities";
-import deleteAmenity from "../services/amenities/getAmenities";
-import getAmenities from "../services/amenities/createAmenity";
-import getAmenityById from "../services/amenities/getAmenityById";
-import updateAmenityById from "../services/amenities/updateAmenityById";
+import getAmenities from "../services/amenities/getAmenities.js";
+import getAmenityById from "../services/amenities/getAmenityById.js";
+import createAmenity from "../services/amenities/createAmenity.js";
+import deleteAmenity from "../services/amenities/deleteAmenity.js";
+import updateAmenityById from "../services/amenities/updateAmenityById.js";
 import authMiddleware from "../middleware/advancedAuth.js";
 
-export const router = express.Router();
+const router = express.Router();
 
 router.get("/", (req, res) => {
   try {
@@ -15,23 +15,25 @@ router.get("/", (req, res) => {
     res.status(200).json(amenities);
   } catch (error) {
     console.error(error);
-    res.status(500).send(`Error getting Amenities`);
+    res
+      .status(500)
+      .send("Something went wrong while getting list of amenities!");
   }
 });
 
 router.get("/:id", (req, res) => {
   try {
-    const { id } = req.param;
+    const { id } = req.params;
     const amenity = getAmenityById(id);
 
     if (!amenity) {
-      res.status(404).send(`Amenity ${id} not found`);
+      res.status(404).send(`Amenity with id ${id} was not found!`);
     } else {
       res.status(200).json(amenity);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send(`Amenity not found by Id`);
+    res.status(500).send("Something went wrong while getting amenity by id!");
   }
 });
 
@@ -43,7 +45,7 @@ router.put("/:id", authMiddleware, (req, res) => {
     res.status(200).json(updatedAmenity);
   } catch (error) {
     console.error(error);
-    res.status(500).send(`Amenity failed to update by Id`);
+    res.status(500).send("Something went wrong while updating amenity by id!");
   }
 });
 
@@ -54,14 +56,21 @@ router.post("/", authMiddleware, (req, res) => {
 });
 
 router.delete("/:id", authMiddleware, (req, res) => {
-  const { id } = req.params;
-  const deleteAmenityId = deleteAmenity(id);
+  try {
+    const { id } = req.params;
+    const deletedAmenityId = deleteAmenity(id);
 
-  if (!deleteAmenityId) {
-    res.status(404).send(`Amenity ${id} not found`);
-  } else {
-    res.status(200).json({
-      message: `Amenity with id ${deletedAmenityId} was deleted!`,
-    });
+    if (!deletedAmenityId) {
+      res.status(404).send(`Amenity with id ${id} was not found!`);
+    } else {
+      res.status(200).json({
+        message: `Amenity with id ${deletedAmenityId} was deleted!`,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Something went wrong while deleting booking by id!");
   }
 });
+
+export default router;

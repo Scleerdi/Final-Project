@@ -1,10 +1,10 @@
 import express from "express";
 import userData from "../data/users.json" assert { type: "json" };
 import jwt from "jsonwebtoken";
-import auth0 from "auth0w -js";
+const { auth, requiresAuth } = require("express-openid-connect");
 
 const router = express.Router();
-var webAuth = new auth0.WebAuth({
+var webAuth = new auth.WebAuth({
   domain: "dev-ve8rhfzib1f1o1gu.eu.auth0.com",
   clientID: "tBWipe8DVFSSiIAKZQ22Lay5blJ6dF01",
 });

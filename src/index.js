@@ -1,6 +1,5 @@
 import express from "express";
 import * as Sentry from "@sentry/node";
-
 import bookingsRouter from "./routes/bookings.js";
 import amenitiesRouter from "./routes/amenities.js";
 import hostsRouter from "./routes/hosts.js";
@@ -8,40 +7,49 @@ import loginRouter from "./routes/login.js";
 import propertiesRouter from "./routes/properties.js";
 import reviewsRouter from "./routes/reviews.js";
 import usersRouter from "./routes/users.js";
-import log from "./middleware/logMiddleware.js";
-import errorHandler from "./middleware/errorHandler.js";
 import "dotenv/config.js";
 
-const app = express();
-app.use(express.json()); //always near const app = express();
-app.use(log);
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 
 Sentry.init({
-  //also always near const app = express();
-  dsn: "https://b98f506f97da88ceb7f32f68c82adb53@o4506036808515584.ingest.sentry.io/4506178765651968",
+  dsn: "https://e49c9a0dc7d523f5bd24cd9f1472c483@o4506898858115072.ingest.us.sentry.io/4506898874630144",
   integrations: [
     // enable HTTP calls tracing
     new Sentry.Integrations.Http({ tracing: true }),
     // enable Express.js middleware tracing
     new Sentry.Integrations.Express({ app }),
-    // Automatically instrument Node.js libraries and frameworks
-    ...Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
+    nodeProfilingIntegration(),
   ],
-
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
+  // Performance Monitoring
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  profilesSampleRate: 1.0,
 });
-// RequestHandler creates a separate execution context, so that all
-// transactions/spans/breadcrumbs are isolated across requests
+
+// The request handler must be the first middleware on the app
 app.use(Sentry.Handlers.requestHandler());
+
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
-// The error handler must be before any other error middleware and after all controllers
+
+// All your controllers should live here
+app.get("/", function rootHandler(req, res) {
+  res.end("Hello world!");
+});
+
+// The error handler must be registered before any other error middleware and after all controllers
 app.use(Sentry.Handlers.errorHandler());
 
-app.use(errorHandler);
+// Optional fallthrough error handler
+app.use(function onError(err, req, res, next) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
+
+const app = express();
+app.listen(3000);
 
 app.use("/bookings", bookingsRouter);
 app.use("/amenities", amenitiesRouter);

@@ -6,9 +6,9 @@ import updateHostById from "../services/hosts/updateHostById.js";
 import deleteHost from "../services/hosts/deleteHost.js";
 import authMiddleware from "../middleware/advancedAuth.js";
 
-export const router = express.Router();
+export const hostsRouter = express.Router();
 
-router.get("/", (req, res) => {
+hostsRouter.get("/", (req, res) => {
   try {
     const { aboutMe } = req.query;
     const hosts = getHosts(aboutMe);
@@ -19,7 +19,7 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
+hostsRouter.get("/:id", (req, res) => {
   try {
     const { id } = req.params;
     const host = getHostById(id);
@@ -35,7 +35,7 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.put("/:id", authMiddleware, (req, res) => {
+hostsRouter.put("/:id", authMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const {
@@ -63,7 +63,7 @@ router.put("/:id", authMiddleware, (req, res) => {
   }
 });
 
-router.post("/", authMiddleware, (req, res) => {
+hostsRouter.post("/", authMiddleware, (req, res) => {
   const {
     username,
     password,
@@ -85,7 +85,7 @@ router.post("/", authMiddleware, (req, res) => {
   res.status(201).json(newHost);
 });
 
-router.delete("/:id", authMiddleware, (req, res) => {
+hostsRouter.delete("/:id", authMiddleware, (req, res) => {
   try {
     const { id } = req.params;
     const deletedHost = deleteHost(id);

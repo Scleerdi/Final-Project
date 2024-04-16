@@ -1,6 +1,6 @@
 import express from "express";
 import getUsers from "../services/users/getUsers.js";
-import getUserById from "../services/users/geteUserById.js";
+import getUserById from "../services/users/getUsersById.js";
 import createUser from "../services/users/createUser.js";
 import deleteUser from "../services/users/deleteUser.js";
 import updateUserById from "../services/users/updateUserById.js";
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
     res.status(200).json(users);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error getting users");
+    res.status(500).send("Something went wrong while getting list of users!");
   }
 });
 
@@ -23,13 +23,13 @@ router.get("/:id", (req, res) => {
     const user = getUserById(id);
 
     if (!user) {
-      res.status(404).send(`User ${id} not found`);
+      res.status(404).send(`User with id ${id} was not found!`);
     } else {
       res.status(200).json(user);
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send("User not found by Id");
+    res.status(500).send("Something went wrong while getting user by id!");
   }
 });
 

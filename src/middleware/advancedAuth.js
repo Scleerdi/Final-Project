@@ -1,4 +1,4 @@
-import { auth } from "express-oauth2-jwt-bearer";
+const { auth, requiresAuth } = require("express-openid-connect");
 
 export const authMiddleware = auth({
   audience: "https://express-bookings-api",

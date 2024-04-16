@@ -1,5 +1,5 @@
-import bookingData from "../../data/bookings.json";
+import bookingsData from "../../data/bookings.json" assert { type: "json" };
 
 export const getBookings = () => {
-  return bookingData;
+  return bookingsData;
 };
