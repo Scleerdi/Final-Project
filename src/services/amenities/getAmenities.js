@@ -1,5 +1,10 @@
-import amenityData from "../../data/amenities.json";
+import { PrismaClient } from "@prisma/client";
 
-export const getAmenities = () => {
-  return amenityData;
+const getAmenities = async () => {
+  const prisma = new PrismaClient();
+  const amenities = await prisma.amenity.findMany();
+
+  return amenities;
 };
+
+export default getAmenities;

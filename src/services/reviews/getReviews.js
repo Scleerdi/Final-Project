@@ -1,5 +1,8 @@
-import reviewData from "../../data/reviews.json";
+import { PrismaClient } from "@prisma/client";
 
-export const getReviews = () => {
-  return reviewData;
+export const getReviews = async () => {
+  const prisma = new PrismaClient();
+  const reviews = await prisma.review.findMany();
+
+  return reviews;
 };

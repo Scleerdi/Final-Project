@@ -1,5 +1,8 @@
-import bookingsData from "../../data/bookings.json" assert { type: "json" };
+import { PrismaClient } from "@prisma/client";
 
-export const getBookings = () => {
-  return bookingsData;
+export const getAmenities = async () => {
+  const prisma = new PrismaClient();
+  const bookings = await prisma.bookings.findMany();
+
+  return bookings;
 };

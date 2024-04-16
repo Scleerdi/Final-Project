@@ -1,5 +1,8 @@
-import userData from "../../data/users.json";
+import { PrismaClient } from "@prisma/client";
 
-export const getUser = () => {
-  return userData;
+export const getUsers = async () => {
+  const prisma = new PrismaClient();
+  const users = await prisma.user.findMany();
+
+  return users;
 };
